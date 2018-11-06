@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Intercom AI Assist",
+  "description": "Intercom AI Assist",
+  "version": "3.3",
+  "icons": {
+    "128": "intercomAI.png"
+  },
+  "browser_action": {
+    "default_icon": "intercomAI.png",
+    "default_popup": "credentials.html"
+  },
+  "background": {
+    "page": "background.html",
+    "persistent": true
+  },
+  "content_scripts": [    //<-------------------------------------------------------------Content Script details in manifest
+    { "run_at" :"document_end",
+      "matches": ["https://app.intercom.io/*", "https://www.intercom.io/*", "https://www.linkedin.com/search/*", "https://www.linkedin.com/in/*", "https://www.linkedin.com/mynetwork/invite-sent*", "https://www.linkedin.com/mynetwork/invite-sent/*", "https://www.linkedin.com/mynetwork", "https://www.linkedin.com/mynetwork/*"],
+      "js": ["jquery-1.11.3.min.js","run-on-page-script.js"]
+    } ],
+  //"run_at" tells when to load the javascript,
+  //"matches" tells the URL to match to inject the code which I'm using Gmail here,
+  //"js" tells all .js files to inject,
+  //"CSS" tells about all included CSS files for injection.
+  "permissions": [
+    "tabs",
+    "identity",
+    "cookies",
+    "activeTab",
+    "background",
+    "<all_urls>",
+    "https://*.facebook.com/",
+    "https://us-central1-social-bubble-extension.cloudfunctions.net/*"
+  ],
+  "content_security_policy":"script-src 'self' https://www.gstatic.com/ https://code.jquery.com https://*.firebaseio.com https://www.googleapis.com https://*.facebook.com https://ssl.google-analytics.com; object-src 'self'",
+  "oauth2": {
+    "client_id": "200837106164-nml1j07okmng1u2083cp690et4rtp3n5.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
+  }
+}
