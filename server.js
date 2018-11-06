@@ -2,6 +2,9 @@ var request = require('request');
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var fs = require('fs');
+const fse = require('fs-extra');
+
 
 var contextHistory = [];
 
@@ -40,14 +43,27 @@ var doSomethingInit = function(question, sessionId){
 	})
 }
 
+var writeLogs = function(sessionId, who, msg){
+	const file = './logs/'+sessionId+'.txt';
+    fse.ensureFileSync(file);
+	fs.appendFile(file, new Date() + ' - ' + who + ':' + msg + '\n', function (err) {
+		console.log('append file err', err);
+	})
+}
+
 app.post('/api/question', function (req, res) {
 	console.log('req.body - /api/question', req.body);
+	var sessionId = req.body.sessionId;
+	var msg = req.body.query;
+	// store log
+	writeLogs(sessionId, 'them', msg);
 
 	doSomethingInit(req.body.query, req.body.sessionId).then((response)=>{
 		console.log('response', response);
 		if(response.result.metadata.contexts.length > 0){
 			contextHistory.push(response.result.metadata.contexts);
 		}
+		writeLogs(sessionId, 'you', response.result.speech);
 		res.json(response.result.speech);
 	})
 })
