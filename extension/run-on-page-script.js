@@ -4,15 +4,41 @@ console.log('Running Intercom AI Assist Extension services');
 
 
 $(document).ready(function(){
-	var sessionId = Math.floor(Math.random() * 99999) + 1;
+	//var sessionId = Math.floor(Math.random() * 99999) + 1;
+	var conversationId = window.location.href.split('conversations/')[1];
+	var suggestedReply = '';
+
+	$('body').prepend(`
+		<div class="context-menu-one" style="position: absolute;z-index: 9999;background: lightgrey;">
+			<span class="btn btn-neutral" style="display: block">set context</span>
+			<span id="suggested-msg" class="btn btn-neutral" style="display: block"></span>
+		</div>
+		`);
+	$( "body" ).contextmenu((e)=> {
+		e.preventDefault();
+	    console.log( "Handler for .contextmenu() called.", e.target, e.pageX, e.pageY);
+	    $('.context-menu-one').css({'left' : e.pageX + 'px', top: e.pageY + 'px'});
+	});
+
+    $('#suggested-msg').on('click', (e)=>{
+        console.log('suggested-msg clicked', suggestedReply);
+        $('[contenteditable]').find('p').text(suggestedReply);
+    })
 
 	var getResponse = function(theirMsg){
-		//'https://phatchats.com/api/question';
 		console.log('theirMsg', theirMsg);
-		$.post( "https://phatchats.com/api/question", {"query": theirMsg, lang: 'en', sessionId: sessionId})
-		  .done(function( data ) {
-		    alert( "data from api: " + data );
-		});
+		$.ajax({
+           type: "POST",
+           url: "https://phatchats.com/api/question",
+           contentType: "application/json",
+           dataType: "json",
+           data: JSON.stringify({"query": theirMsg, lang: 'en', sessionId: conversationId}),
+           success: (data)=> {
+               console.log( "data from api: " + data );
+               $('#suggested-msg').text(data);
+               suggestedReply = data;
+           }
+       });
 	}
 
     var lastText = '';

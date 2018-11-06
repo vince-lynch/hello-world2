@@ -41,7 +41,7 @@ var doSomethingInit = function(question, sessionId){
 }
 
 app.post('/api/question', function (req, res) {
-	console.log('req.body', req.body);
+	console.log('req.body - /api/question', req.body);
 
 	doSomethingInit(req.body.query, req.body.sessionId).then((response)=>{
 		console.log('response', response);
@@ -53,6 +53,7 @@ app.post('/api/question', function (req, res) {
 })
 
 app.get('/api/contextHistory', function (req, res) {
+	console.log('/api/contextHistory')
 	res.send(contextHistory);
 })
 
