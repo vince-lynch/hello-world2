@@ -4,12 +4,23 @@ console.log('Running Intercom AI Assist Extension services');
 
 
 $(document).ready(function(){
+	var sessionId = Math.floor(Math.random() * 99999) + 1;
+
+	var getResponse = function(theirMsg){
+		//'https://phatchats.com/api/question';
+		console.log('theirMsg', theirMsg);
+		$.post( "https://phatchats.com/api/question", {"query": theirMsg, lang: 'en', sessionId: sessionId})
+		  .done(function( data ) {
+		    alert( "data from api: " + data );
+		});
+	}
+
     var lastText = '';
     setInterval(()=>{
     	var newMessage = $('.conversation__text.o__user-comment ').last().text().trim();
     	if(newMessage != lastText){
     		// get response to send to user
-    		console.log('newMessage', newMessage)
+    		getResponse(newMessage)
     	}
     	lastText = newMessage;
     	//console.log('lastText', lastText);
